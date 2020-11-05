@@ -76,4 +76,42 @@ func main() {
 	for _, v := range recetas {
 		fmt.Println(v)
 	}
+
+	//pido receta por id válido
+	receta1, error := paginaRecetas.getReceta(1)
+
+	if error != nil {
+		fmt.Println(error)
+	} else {
+		fmt.Println(receta1)
+	}
+
+	//pido receta por id inválido
+	receta2, error := paginaRecetas.getReceta(3)
+
+	if error != nil {
+		fmt.Println(error)
+	} else {
+		fmt.Println(receta2)
+	}
+
+	//edito receta
+	paginaRecetas.updateReceta(1, "Editada", 20, "Alta")
+	receta3, error := paginaRecetas.getReceta(1)
+
+	if error != nil {
+		fmt.Println(error)
+	} else {
+		fmt.Println(receta3)
+	}
+
+	//borro receta
+	paginaRecetas.deleteReceta(1)
+	receta4, error := paginaRecetas.getReceta(1)
+
+	if error != nil {
+		fmt.Println(error)
+	} else {
+		fmt.Println(receta4)
+	}
 }
