@@ -53,7 +53,8 @@ func (p *paginaRecetas) updateReceta(id int, nombre string, duracion int, dificu
 func (p *paginaRecetas) deleteReceta(id int) {
 	for i, receta := range p.recetas {
 		if receta.id == id {
-			p.recetas = p.recetas[:i+copy(p.recetas[i:], p.recetas[i+1:])]
+			p.recetas = append(p.recetas[:i], p.recetas[i+1:]...)
+			// p.recetas = p.recetas[:i+copy(p.recetas[i:], p.recetas[i+1:])] // forma alternativa
 		}
 	}
 }
