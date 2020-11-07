@@ -40,12 +40,12 @@ func (p *paginaRecetas) getReceta(id int) (receta, error) {
 	return receta, errors.New("No se encontró receta con este id")
 }
 
-func (p *paginaRecetas) updateReceta(id int, nombre string, duracion int, dificultad string) {
+func (p *paginaRecetas) updateReceta(receta receta) {
 	for i := 0; i < len(p.recetas); i++ {
-		if p.recetas[i].id == id {
-			p.recetas[i].nombre = nombre
-			p.recetas[i].duracion = duracion
-			p.recetas[i].dificultad = dificultad
+		if p.recetas[i].id == receta.id {
+			p.recetas[i].nombre = receta.nombre
+			p.recetas[i].duracion = receta.duracion
+			p.recetas[i].dificultad = receta.dificultad
 		}
 	}
 }
@@ -97,13 +97,20 @@ func main() {
 	}
 
 	//edito receta
-	paginaRecetas.updateReceta(1, "Editada", 20, "Alta")
-	receta3, error := paginaRecetas.getReceta(1)
+	recetaEdit, error := paginaRecetas.getReceta(1)
 
 	if error != nil {
 		fmt.Println(error)
 	} else {
-		fmt.Println(receta3)
+		recetaEdit.nombre = "Receta editada"
+		paginaRecetas.updateReceta(recetaEdit)
+		receta3, error := paginaRecetas.getReceta(1)
+
+		if error != nil {
+			fmt.Println(error)
+		} else {
+			fmt.Println(receta3)
+		}
 	}
 
 	//borro receta
