@@ -43,9 +43,7 @@ func (p *paginaRecetas) getReceta(id int) (receta, error) {
 func (p *paginaRecetas) updateReceta(receta receta) {
 	for i := 0; i < len(p.recetas); i++ {
 		if p.recetas[i].id == receta.id {
-			p.recetas[i].nombre = receta.nombre
-			p.recetas[i].duracion = receta.duracion
-			p.recetas[i].dificultad = receta.dificultad
+			p.recetas[i] = receta
 		}
 	}
 }
