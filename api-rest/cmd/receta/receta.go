@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
-	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config/database"
-	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config/service/receta"
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/database"
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/service/receta"
 )
 
 func main() {

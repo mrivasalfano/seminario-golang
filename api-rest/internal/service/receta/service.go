@@ -2,7 +2,7 @@ package receta
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/mrivasalfano/seminario-golang/internal/config"
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
 )
 
 // Receta ...
