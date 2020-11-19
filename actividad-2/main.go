@@ -31,7 +31,7 @@ func main() {
 	// r.Run()
 }
 
-//receta
+//Receta ...
 type Receta struct {
 	ID         int    `db:"id"`
 	Nombre     string `db:"nombre"`
