@@ -4,6 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config/database"
+	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config/service/receta"
 )
 
 func main() {

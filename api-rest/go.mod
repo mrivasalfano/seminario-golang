@@ -1,4 +1,4 @@
-module github.com/mrivasalfano/seminario-golang
+module github.com/mrivasalfano/seminario-golang/api-rest
 
 go 1.15
 
