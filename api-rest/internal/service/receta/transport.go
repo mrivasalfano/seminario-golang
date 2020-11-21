@@ -56,7 +56,7 @@ func makeEndpoints(s Service) []*endpoint {
 
 	list = append(list, &endpoint{
 		method:   "DELETE",
-		path:     "/recetas/{id}",
+		path:     "/recetas",
 		function: deleteReceta(s),
 	})
 
@@ -88,7 +88,14 @@ func addReceta(s Service) gin.HandlerFunc {
 			Duracion:   requestBody.Duracion,
 			Dificultad: requestBody.Dificultad,
 		}
-		s.AddReceta(receta)
+
+		id, err := s.AddReceta(receta).LastInsertId()
+
+		if err != nil {
+			c.Status(500)
+		}
+
+		receta.ID = id
 		c.JSON(http.StatusCreated, receta)
 	}
 }
@@ -103,15 +110,25 @@ func updateReceta(s Service) gin.HandlerFunc {
 			Duracion:   requestBody.Duracion,
 			Dificultad: requestBody.Dificultad,
 		}
+
 		s.UpdateReceta(receta)
+
 		c.JSON(http.StatusCreated, receta)
 	}
 }
 
 func deleteReceta(s Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		s.DeleteReceta(c.Param("id"))
-		c.JSON(http.StatusOK, gin.H{})
+		requestBody := Receta{}
+		c.Bind(&requestBody)
+		receta := Receta{
+			ID:         requestBody.ID,
+			Nombre:     requestBody.Nombre,
+			Duracion:   requestBody.Duracion,
+			Dificultad: requestBody.Dificultad,
+		}
+		s.DeleteReceta(receta)
+		c.JSON(http.StatusOK, receta)
 	}
 }
 
