@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/database"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/service/receta"
@@ -16,6 +17,11 @@ func main() {
 	db, err := database.NewDatabase(cfg)
 
 	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+
+	if err := createSchema(db); err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
@@ -38,4 +44,22 @@ func readConfig() *config.Config {
 	}
 
 	return cfg
+}
+
+func createSchema(db *sqlx.DB) error {
+	schema := `CREATE TABLE IF NOT EXISTS receta (
+		id integer primary key autoincrement,
+		nombre varchar(50),
+		duracion int,
+		dificultad varchar (20)
+	);`
+
+	_, err := db.Exec(schema)
+	if err != nil {
+		return err
+	}
+
+	insertReceta := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
+	db.MustExec(insertReceta, "Tortilla", 30, "Media")
+	return nil
 }

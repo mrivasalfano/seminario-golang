@@ -8,9 +8,9 @@ import (
 // Receta ...
 type Receta struct {
 	ID         int
-	nombre     string
-	duracion   int
-	dificultad string
+	Nombre     string
+	Duracion   int
+	Dificultad string
 }
 
 // RecetaService ...
@@ -40,6 +40,8 @@ func (s service) FindByID(ID int) *Receta {
 
 func (s service) FindAll() []*Receta {
 	var list []*Receta
-	s.db.Select(&list, "SELECT * FROM receta")
+	if err := s.db.Select(&list, "SELECT * FROM receta"); err != nil {
+		panic(err)
+	}
 	return list
 }
