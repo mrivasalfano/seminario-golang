@@ -13,11 +13,13 @@ type Receta struct {
 	Dificultad string
 }
 
-// RecetaService ...
-type RecetaService interface {
+// Service ...
+type Service interface {
 	AddReceta(Receta) error
-	FindByID(int) *Receta
+	FindByID(string) *Receta
 	FindAll() []*Receta
+	UpdateReceta(Receta) error
+	DeleteReceta(string) error
 }
 
 type service struct {
@@ -26,16 +28,26 @@ type service struct {
 }
 
 // New ...
-func New(db *sqlx.DB, c *config.Config) (RecetaService, error) {
+func New(db *sqlx.DB, c *config.Config) (Service, error) {
 	return service{db, c}, nil
 }
 
 func (s service) AddReceta(r Receta) error {
+	insertReceta := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
+	s.db.MustExec(insertReceta, r.Nombre, r.Duracion, r.Dificultad)
+
 	return nil
 }
 
-func (s service) FindByID(ID int) *Receta {
+func (s service) UpdateReceta(r Receta) error {
+	insertReceta := `UPDATE receta SET nombre = ?, duracion = ?, dificultad = ? WHERE id = ?`
+	s.db.MustExec(insertReceta, r.Nombre, r.Duracion, r.Dificultad, r.ID)
+
 	return nil
+}
+
+func (s service) FindByID(ID string) *Receta {
+	return &Receta{}
 }
 
 func (s service) FindAll() []*Receta {
@@ -44,4 +56,11 @@ func (s service) FindAll() []*Receta {
 		panic(err)
 	}
 	return list
+}
+
+func (s service) DeleteReceta(id string) error {
+	insertReceta := `DELETE FROM receta WHERE id = ?`
+	s.db.MustExec(insertReceta, id)
+
+	return nil
 }

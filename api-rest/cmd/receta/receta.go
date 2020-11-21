@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/database"
@@ -15,7 +16,7 @@ func main() {
 	cfg := readConfig()
 
 	db, err := database.NewDatabase(cfg)
-
+	defer db.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
@@ -27,10 +28,14 @@ func main() {
 	}
 
 	service, _ := receta.New(db, cfg)
+	HTTPService := receta.NewHTTPTransport(service)
 
-	for _, m := range service.FindAll() {
-		fmt.Println(m)
-	}
+	r := gin.Default()
+	HTTPService.Register(r)
+	r.Run()
+	// for _, m := range service.FindAll() {
+	// 	fmt.Println(m)
+	// }
 }
 
 func readConfig() *config.Config {
@@ -59,7 +64,5 @@ func createSchema(db *sqlx.DB) error {
 		return err
 	}
 
-	insertReceta := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
-	db.MustExec(insertReceta, "Tortilla", 30, "Media")
 	return nil
 }
