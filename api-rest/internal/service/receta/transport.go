@@ -50,13 +50,13 @@ func makeEndpoints(s Service) []*endpoint {
 
 	list = append(list, &endpoint{
 		method:   "PUT",
-		path:     "/recetas",
+		path:     "/recetas/:id",
 		function: updateReceta(s),
 	})
 
 	list = append(list, &endpoint{
 		method:   "DELETE",
-		path:     "/recetas",
+		path:     "/recetas/:id",
 		function: deleteReceta(s),
 	})
 
@@ -105,14 +105,12 @@ func updateReceta(s Service) gin.HandlerFunc {
 		requestBody := Receta{}
 		c.Bind(&requestBody)
 		receta := Receta{
-			ID:         requestBody.ID,
 			Nombre:     requestBody.Nombre,
 			Duracion:   requestBody.Duracion,
 			Dificultad: requestBody.Dificultad,
 		}
 
-		s.UpdateReceta(receta)
-
+		s.UpdateReceta(receta, c.Param("id"))
 		c.JSON(http.StatusCreated, receta)
 	}
 }
@@ -121,14 +119,8 @@ func deleteReceta(s Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestBody := Receta{}
 		c.Bind(&requestBody)
-		receta := Receta{
-			ID:         requestBody.ID,
-			Nombre:     requestBody.Nombre,
-			Duracion:   requestBody.Duracion,
-			Dificultad: requestBody.Dificultad,
-		}
-		s.DeleteReceta(receta)
-		c.JSON(http.StatusOK, receta)
+		s.DeleteReceta(c.Param(("id")))
+		c.Status(200)
 	}
 }
 
