@@ -38,7 +38,7 @@ func makeEndpoints(s Service) []*endpoint {
 
 	list = append(list, &endpoint{
 		method:   "GET",
-		path:     "/recetas/{id}",
+		path:     "/recetas/:id",
 		function: getReceta(s),
 	})
 

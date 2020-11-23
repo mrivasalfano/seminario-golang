@@ -35,17 +35,23 @@ func New(db *sqlx.DB, c *config.Config) (Service, error) {
 }
 
 func (s service) AddReceta(r Receta) sql.Result {
-	insertReceta := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
-	return s.db.MustExec(insertReceta, r.Nombre, r.Duracion, r.Dificultad)
+	query := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
+	return s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad)
 }
 
 func (s service) UpdateReceta(r Receta) sql.Result {
-	insertReceta := `UPDATE receta SET nombre = ?, duracion = ?, dificultad = ? WHERE id = ?`
-	return s.db.MustExec(insertReceta, r.Nombre, r.Duracion, r.Dificultad, r.ID)
+	query := `UPDATE receta SET nombre = ?, duracion = ?, dificultad = ? WHERE id = ?`
+	return s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad, r.ID)
 }
 
 func (s service) FindByID(ID string) *Receta {
-	return &Receta{}
+	receta := &Receta{}
+	query := `SELECT * FROM receta WHERE id = ?`
+	err := s.db.Get(receta, query, ID)
+	if err != nil {
+		return nil
+	}
+	return receta
 }
 
 func (s service) FindAll() []*Receta {
@@ -57,6 +63,6 @@ func (s service) FindAll() []*Receta {
 }
 
 func (s service) DeleteReceta(r Receta) sql.Result {
-	insertReceta := `DELETE FROM receta WHERE id = ?`
-	return s.db.MustExec(insertReceta, r.ID)
+	query := `DELETE FROM receta WHERE id = ?`
+	return s.db.MustExec(query, r.ID)
 }
