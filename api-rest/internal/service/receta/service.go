@@ -1,8 +1,6 @@
 package receta
 
 import (
-	"database/sql"
-
 	"github.com/jmoiron/sqlx"
 	"github.com/mrivasalfano/seminario-golang/api-rest/internal/config"
 )
@@ -17,11 +15,11 @@ type Receta struct {
 
 // Service ...
 type Service interface {
-	AddReceta(Receta) sql.Result
+	AddReceta(Receta) (int64, error)
 	FindByID(string) *Receta
 	FindAll() []*Receta
-	UpdateReceta(Receta, string) sql.Result
-	DeleteReceta(string) sql.Result
+	UpdateReceta(Receta, string)
+	DeleteReceta(string) *Receta
 }
 
 type service struct {
@@ -34,14 +32,15 @@ func New(db *sqlx.DB, c *config.Config) (Service, error) {
 	return service{db, c}, nil
 }
 
-func (s service) AddReceta(r Receta) sql.Result {
+func (s service) AddReceta(r Receta) (int64, error) {
 	query := `INSERT INTO receta (nombre, duracion, dificultad) VALUES (?,?,?)`
-	return s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad)
+	return s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad).LastInsertId()
+
 }
 
-func (s service) UpdateReceta(r Receta, id string) sql.Result {
+func (s service) UpdateReceta(r Receta, id string) {
 	query := `UPDATE receta SET nombre = ?, duracion = ?, dificultad = ? WHERE id = ?`
-	return s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad, id)
+	s.db.MustExec(query, r.Nombre, r.Duracion, r.Dificultad, id)
 }
 
 func (s service) FindByID(ID string) *Receta {
@@ -62,7 +61,9 @@ func (s service) FindAll() []*Receta {
 	return list
 }
 
-func (s service) DeleteReceta(id string) sql.Result {
+func (s service) DeleteReceta(id string) *Receta {
+	receta := s.FindByID(id)
 	query := `DELETE FROM receta WHERE id = ?`
-	return s.db.MustExec(query, id)
+	s.db.MustExec(query, id).RowsAffected()
+	return receta
 }

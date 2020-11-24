@@ -2,6 +2,7 @@ package receta
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -89,7 +90,7 @@ func addReceta(s Service) gin.HandlerFunc {
 			Dificultad: requestBody.Dificultad,
 		}
 
-		id, err := s.AddReceta(receta).LastInsertId()
+		id, err := s.AddReceta(receta)
 
 		if err != nil {
 			c.Status(500)
@@ -111,6 +112,12 @@ func updateReceta(s Service) gin.HandlerFunc {
 		}
 
 		s.UpdateReceta(receta, c.Param("id"))
+
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.Status(500)
+		}
+		receta.ID = int64(id)
 		c.JSON(http.StatusCreated, receta)
 	}
 }
@@ -119,8 +126,8 @@ func deleteReceta(s Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestBody := Receta{}
 		c.Bind(&requestBody)
-		s.DeleteReceta(c.Param(("id")))
-		c.Status(200)
+		receta := s.DeleteReceta(c.Param(("id")))
+		c.JSON(http.StatusOK, receta)
 	}
 }
 

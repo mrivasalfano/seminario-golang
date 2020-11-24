@@ -33,9 +33,6 @@ func main() {
 	r := gin.Default()
 	HTTPService.Register(r)
 	r.Run()
-	// for _, m := range service.FindAll() {
-	// 	fmt.Println(m)
-	// }
 }
 
 func readConfig() *config.Config {
